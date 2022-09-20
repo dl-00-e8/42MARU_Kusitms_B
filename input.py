@@ -3,10 +3,10 @@
 
 from Module.regex import regex
 
-input_data = '오늘은 108도야!, 내일은 100도래'
+input_data = '시속 100km/h의 정상수'
 
 now = regex(input_data)
-now.find_regex()
+now.find_loop()
 print(now.get_entity_name())
 print(now.get_value())
 print(now.get_start_idx())
