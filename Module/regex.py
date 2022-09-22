@@ -29,13 +29,14 @@ url = re.compile(r'((http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/
 bussiness_number = re.compile(r'((?!02)\d{10}|\d{3}[-]\d{2}[-]\d{5}|\d{3}\s\d{2}\s\d{5})')
 phone_number = re.compile(r'((?=02)\d{10}|\d{11,}|\d+[-]\d{3,}[-]\d{3,}|\d+[.]\d{3,}[.]\d{3,}|\d+\s[\d{3,}]+\s[\d{3,}]+)')
 licenseplate_number = re.compile(r'\d{1,}[\s]*[가-힣][\s]*\d{4}') 
-date = re.compile(r'(오늘|내일|모래|글피|어제|어저께|([다]*다음|저번|이번|지난|차|이번|이듬)(주|해)|(내[후]*|[제]*작)년)|[월화수목금토일]?요일|([0-9]+년[\s])*([0-9]+월[\s])*[0-9]+일')
+date = re.compile(
+    r'(오늘|내일|모래|글피|어제|어저께|([다]*다음|저번|이번|지난|차|이번|이듬)(주|해)|(내[후]*|[제]*작)년)|[월화수목금토일]?요일|(([0-9]+년[\s])([0-9]+월[\s])|([0-9]+월[\s]))*[0-9]+일')
 period = re.compile(r'(이번|지난|다음)주|(올해|(제)*작년|내(후)*년)|(주말|평일)|[0-9]+년([0-9]+월)*|[0-9]+월|[0-9]+(년|월|일)부터 [0-9]+(년|월|일)까지')
 lunar = re.compile(r'(올해|[\S]*년)*[\s]*음력[\s]*([0-9]+년)*[\s]*([0-9]+월)*[\s]*([0-9]+일)*(설날|추석)*')
 period_lunar = re.compile(r'음력[\s][1-12]?월')
 time = re.compile(r'((오전|오후|밤|낮|[0-9]+(시|분))*[\s]*[0-9]+(시|분|초)|(정오|자정))[\s]*(뒤|후)*')
 time_period = re.compile(r'(오전|아침|새벽|저녁|낮|밤)*[\s]*(오전|아침|새벽|저녁|낮|밤|([0-9]+시부터 [\S]*까지))')
-date_time = re.compile(r'(([월화수목금토일]?요일)|오늘|내일|모레|글피|어[제|젯]|(\d+월\s?\d일))?\s*((낮|밤|저녁|오전|오후)?)*\s*((아침|점심|저녁)?)*\s*((\d+시부터\s?\d+시까지)?)*')
+date_time = re.compile(r'(내일|모레|오전|글피)\s(오전|오후)*\s?[0-9]+시|현재|[0-9]+월\s?[0-9]+일\s?(오전|오후|낮|밤|아침|점심|저녁|새벽)?\s?[0-9]+시')
 date_time_period = re.compile(r'((오늘|내일|어[제|젯]|모레)|[0-9]+년[\s]*[0-9]+월[\s]*[0-9]일|[0-9]+년[\s]*[0-9]+월|[0-9]+년)[\s]*((오전|오후|낮|밤)|[0-9]+시부터[\s]*[0-9]+시[까지]*)')
 
 # 정규표현식 entitiy_name, now_regex list
@@ -273,7 +274,7 @@ class regex:
         for i in self.redis_key:
             for now in self.connection.lrange(i[0], 0, i[1]):
                 self.find_regex(i[0], now.decode("UTF-8"))
-        
+
         # Redis 미사용
         for i in entity_list:
             self.now_entity_name = i[0]
@@ -319,7 +320,15 @@ class regex:
 
     # 해당되는 값 찾기
     def get_value(self):
-        
+        for i in self.entity_name:
+            if i == '@sys.date':
+                idx = self.entity_name.index(i)
+        p = re.compile('([0-9]+년\s)*([0-9]+월[\s])*[0-9]+일')
+        if p.match(self.value[idx]):
+            result = re.sub(r'년\s', '-', self.value[idx])
+            result = re.sub(r'월\s', '-', result)
+            result = re.sub(r'일\s*', ' 00:00:00', result)
+            self.value[idx] = result
         return self.value
 
 
@@ -348,14 +357,6 @@ class regex:
         self.new.sort(key = lambda x : len(x[1]), reverse = True)
         for word in self.new:
             self.sentence = re.sub(word[1], self.entity_name[word[0]], self.sentence)
-            
-            '''
-            if p.match(self.value):
-                # self.value = datetime.strptime(self.value, '%Y-%m-%d')
-                self.value = re.sub('[년월]\s?', '-', self.value)
-                self.value = re.sub('일\s?', ' 00:00:00', self.value)
-            '''
-
             self.tagged_sentence = self.sentence
 
         return self.tagged_sentence
