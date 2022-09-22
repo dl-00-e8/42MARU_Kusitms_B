@@ -304,6 +304,10 @@ class regex:
 
     # 해당되는 값 찾기
     def get_value(self):
+        if self.entity_name == '@sys.date':
+            self.value = re.sub('[년월]\s?', '-', self.value)
+            self.value = re.sub('일\s?', ' 00:00:00', self.value)
+
         
         return self.value
 
@@ -333,14 +337,6 @@ class regex:
         self.new.sort(key = lambda x : len(x[1]), reverse = True)
         for word in self.new:
             self.sentence = re.sub(word[1], self.entity_name[word[0]], self.sentence)
-            
-            '''
-            if p.match(self.value):
-                # self.value = datetime.strptime(self.value, '%Y-%m-%d')
-                self.value = re.sub('[년월]\s?', '-', self.value)
-                self.value = re.sub('일\s?', ' 00:00:00', self.value)
-            '''
-
             self.tagged_sentence = self.sentence
 
         return self.tagged_sentence
