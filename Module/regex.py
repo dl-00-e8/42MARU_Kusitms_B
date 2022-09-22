@@ -79,17 +79,6 @@ class regex:
     def __init__(self, input_data):
         # 사용할 변수목록 (list ver.)
         self.sentence = input_data
-
-        '''
-        # 사용할 변수목록 (not list ver.)
-        self.sentence = input_data
-        self.entity_name = '@null'
-        self.value = 'null'
-        self.start_idx = -1
-        self.end_idx = -1
-        self.tagged_sentence = 'notfound'
-        '''
-
         self.cnt = 0
         self.entity_name = []
         self.value = []
@@ -97,6 +86,7 @@ class regex:
         self.end_idx = []
         self.tagged_sentence = ''
         self.total_idx = []
+        self.output_result = []
 
         # redis 서버 실행 후 DB 구축까지 과정
         self.connection = redis.StrictRedis(host='localhost', port = 6379, db = 0)
@@ -287,14 +277,6 @@ class regex:
 
             self.cnt += 1
 
-            '''
-            # not list ver.
-            self.entity_name = '@sys.unit.temperature'
-            self.value = i.group()
-            self.start_idx = i.start()
-            self.end_idx = i.end() - 1
-            '''
-
 
     # 개체명 찾기 (re 모듈을 이용한 정규표현식 구현 부분)
     def get_entity_name(self):
@@ -330,21 +312,44 @@ class regex:
 
     # 해당 문장 변환
     def get_tagged_sentence(self):
-        '''
-        # not list ver.
-        # start_idx와 end_idx, entity_name 변수 가지고와서 slicing 또는 새로운 변수 정의하는 방식으로 tagged_sentence 만들기
-        self.tagged_sentence = self.sentence[0:self.start_idx] + self.entity_name + self.sentence[self.end_idx + 1:]
-        '''
+        # Output 변수
+        self.new_entity_name = []
+        self.new_value = []
+        self.new_start_idx = []
+        self.new_end_idx = []
+
 
         # list ver.
         self.new = list(zip(self.total_idx, self.value))
         self.new.sort(key = lambda x : len(x[1]), reverse = True)
         for word in self.new:
-            self.sentence = re.sub(word[1], self.entity_name[word[0]], self.sentence)
+            self.temp = re.sub(word[1], self.entity_name[word[0]], self.sentence)
+
+            if(self.temp != self.sentence):
+                self.new_entity_name.append(self.entity_name[word[0]])
+                self.new_value.append(self.value[word[0]])
+                self.new_start_idx.append(self.start_idx[word[0]])
+                self.new_end_idx.append(self.end_idx[word[0]])
+                self.sentence = self.temp
+
             self.tagged_sentence = self.sentence
 
+
+        # Output 리스트 합치기
+        self.output_result.append(self.new_entity_name)
+        self.output_result.append(self.new_value)
+        self.output_result.append(self.new_start_idx)
+        self.output_result.append(self.new_end_idx)
+        self.output_result.append(self.tagged_sentence)
+        
         return self.tagged_sentence
 
+    
+    def get_result(self):
+        self.get_tagged_sentence()
+        
+        return self.output_result
+        
 
 if __name__ == '__main__' :
     pass
