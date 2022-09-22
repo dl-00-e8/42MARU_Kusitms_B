@@ -3,7 +3,7 @@
 
 from Module.regex import regex
 
-input_data = '노동요'
+input_data = '충청남도'
 
 now = regex(input_data)
 now.find_loop()
