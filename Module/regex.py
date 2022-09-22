@@ -305,11 +305,15 @@ class regex:
 
     # 해당되는 값 찾기
     def get_value(self):
-        if self.entity_name == '@sys.date':
-            self.value = re.sub('[년월]\s?', '-', self.value)
-            self.value = re.sub('일\s?', ' 00:00:00', self.value)
-
-        
+        for i in self.entity_name:
+            if i == '@sys.date':
+                idx = self.entity_name.index(i)
+        p = re.compile('([0-9]+년\s)*([0-9]+월[\s])*[0-9]+일')
+        if p.match(self.value[idx]):
+            result = re.sub(r'년\s', '-', self.value[idx])
+            result = re.sub(r'월\s', '-', result)
+            result = re.sub(r'일\s*', ' 00:00:00', result)
+            self.value[idx] = result
         return self.value
 
 
