@@ -29,7 +29,8 @@ url = re.compile(r'((http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/
 bussiness_number = re.compile(r'((?!02)\d{10}|\d{3}[-]\d{2}[-]\d{5}|\d{3}\s\d{2}\s\d{5})')
 phone_number = re.compile(r'((?=02)\d{10}|\d{11,}|\d+[-]\d{3,}[-]\d{3,}|\d+[.]\d{3,}[.]\d{3,}|\d+\s[\d{3,}]+\s[\d{3,}]+)')
 licenseplate_number = re.compile(r'\d{1,}[\s]*[가-힣][\s]*\d{4}') 
-date = re.compile(r'(오늘|내일|모래|글피|어제|어저께|([다]*다음|저번|이번|지난|차|이번|이듬)(주|해)|(내[후]*|[제]*작)년)|[월화수목금토일]?요일|([0-9]+년[\s])*([0-9]+월[\s])*[0-9]+일')
+date = re.compile(
+    r'(오늘|내일|모래|글피|어제|어저께|([다]*다음|저번|이번|지난|차|이번|이듬)(주|해)|(내[후]*|[제]*작)년)|[월화수목금토일]?요일|(([0-9]+년[\s])([0-9]+월[\s])|([0-9]+월[\s]))*[0-9]+일')
 period = re.compile(r'(이번|지난|다음)주|(올해|(제)*작년|내(후)*년)|(주말|평일)|[0-9]+년([0-9]+월)*|[0-9]+월|[0-9]+(년|월|일)부터 [0-9]+(년|월|일)까지')
 lunar = re.compile(r'(올해|[\S]*년)*[\s]*음력[\s]*([0-9]+년)*[\s]*([0-9]+월)*[\s]*([0-9]+일)*(설날|추석)*')
 period_lunar = re.compile(r'음력[\s][1-12]?월')
@@ -258,7 +259,7 @@ class regex:
         for i in self.redis_key:
             for now in self.connection.lrange(i[0], 0, i[1]):
                 self.find_regex(i[0], now.decode("UTF-8"))
-        
+
         # Redis 미사용
         for i in entity_list:
             self.now_entity_name = i[0]
