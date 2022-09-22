@@ -86,6 +86,12 @@ class regex:
         self.end_idx = []
         self.tagged_sentence = ''
         self.total_idx = []
+
+        # Output 변수
+        self.new_entity_name = []
+        self.new_value = []
+        self.new_start_idx = []
+        self.new_end_idx = []
         self.output_result = []
 
         # redis 서버 실행 후 DB 구축까지 과정
@@ -281,44 +287,37 @@ class regex:
     # 개체명 찾기 (re 모듈을 이용한 정규표현식 구현 부분)
     def get_entity_name(self):
         
-        return self.entity_name
+        return self.new_entity_name
 
 
     # 해당되는 값 찾기
     def get_value(self):
-        for i in self.entity_name:
+        for i in self.new_entity_name:
             if i == '@sys.date':
-                idx = self.entity_name.index(i)
+                idx = self.new_entity_name.index(i)
                 p = re.compile('([0-9]+년\s)*([0-9]+월[\s])*[0-9]+일')
-                if p.match(self.value[idx]):
-                    result = re.sub(r'년\s', '-', self.value[idx])
+                if p.match(self.new_value[idx]):
+                    result = re.sub(r'년\s', '-', self.new_value[idx])
                     result = re.sub(r'월\s', '-', result)
                     result = re.sub(r'일\s*', ' 00:00:00', result)
-                    self.value[idx] = result
-        return self.value
+                    self.new_value[idx] = result
+        return self.new_value
 
 
     # 시작 인덱스 찾기
     def get_start_idx(self):
         
-        return self.start_idx
+        return self.new_start_idx
 
 
     # 마지막 인덱스 찾기
     def get_end_idx(self):
         
-        return self.end_idx
+        return self.new_end_idx
 
 
     # 해당 문장 변환
     def get_tagged_sentence(self):
-        # Output 변수
-        self.new_entity_name = []
-        self.new_value = []
-        self.new_start_idx = []
-        self.new_end_idx = []
-
-
         # list ver.
         self.new = list(zip(self.total_idx, self.value))
         self.new.sort(key = lambda x : len(x[1]), reverse = True)
