@@ -3,7 +3,7 @@
 
 from Module.regex import regex
 
-input_data = '시속 100km/h의 정상수'
+input_data = '노동요'
 
 now = regex(input_data)
 now.find_loop()
