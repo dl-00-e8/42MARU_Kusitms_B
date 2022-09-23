@@ -1,5 +1,5 @@
 # 42MARU_Kusitms_B
-42MARU 기업프로젝트 개발과제
+시스템에 등록된 개체명을 특정 문장에서 추출하는 python module 개발
 
 <br>
 
