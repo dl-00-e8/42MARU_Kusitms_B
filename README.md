@@ -44,18 +44,36 @@ Redis 사용 엔티티 선정 방식 : 사전적으로 정리가 필요하고, �
 
 
 ### 4. 디렉토리 구성
-
+42MARU_Kusitms_B:.  
+|   README.md  
+|   tc.feature  
+|   test_fixture.py   
+|               
++---Module  
+　　|   regex.py
+        
 
 ### 5. pytest 사용 방법과 예시
+확인 필수 환경 : Redis 서버 실행 여부 (실행 중이여야 작동)
+
+#### 사용 방법
 (1) tc.feautre 파일에 input과 예상 output을 변경
 
 (2) 해당 디렉토리에서 py.test 진행
 
+(3) - 1. testcase 성공 시, 아래 Output (Success case)와 같이 출력
 
-#### Input 기본 형식
+(3) - 2. testcase 성공 시, 아래 Output (Fail case)와 같이 출력 / E와 함께 작성된 붉은색 문장이 에러 위치 및 내용 제공
 
-#### Input 변경 에시
+#### 예시
+**Input Form**  
+![input_form](https://user-images.githubusercontent.com/76556999/191917756-ee1b0a8c-6d26-4e8c-b477-16329c475dd7.png)
 
-#### Output (Success case)
+**Input Example**  
+![input_exmaple](https://user-images.githubusercontent.com/76556999/191917751-51360588-7374-40c1-958a-098f0c19e2d1.png)
 
-#### Output (Fail case)
+**Output (Success case)**  
+![success_case](https://user-images.githubusercontent.com/76556999/191917758-f1b11072-eb76-47fd-b4a7-1728e681e3bf.png)
+
+**Output (Fail case)**  
+![fail_case](https://user-images.githubusercontent.com/76556999/191917744-71292622-afc3-4f12-8217-ec53fff9da8c.png)
