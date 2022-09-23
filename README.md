@@ -55,6 +55,7 @@ Redis 사용 엔티티 선정 방식 : 사전적으로 정리가 필요하고, �
 
 ### 5. pytest 사용 방법과 예시
 확인 필수 환경 : Redis 서버 실행 여부 (실행 중이여야 작동)
+Redis 설치 필요 시, [설치 페이지](https://github.com/microsoftarchive/redis/releases)로 접속하여, msi 파일 다운로드 진행
 
 #### 사용 방법
 (1) tc.feautre 파일에 input과 예상 output을 변경
