@@ -78,3 +78,7 @@ Redis 설치 필요 시, [설치 페이지](https://github.com/microsoftarchive/
 
 **Output (Fail case)**  
 ![fail_case](https://user-images.githubusercontent.com/76556999/191917744-71292622-afc3-4f12-8217-ec53fff9da8c.png)
+
+
+#### 결과
+![KakaoTalk_20220929_161649690](https://user-images.githubusercontent.com/76556999/199272983-e88b64a5-2b4e-43f1-b544-a441df836496.png)
